@@ -12,5 +12,6 @@
         "GitHub.copilot-chat@prerelease"
       ]
     }
-  }
+  },
+  "postStartCommand": "code src/ie/atu/testpackage/HelloWorld.java"
 }
