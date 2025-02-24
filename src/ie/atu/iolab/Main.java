@@ -3,6 +3,8 @@ package ie.atu.iolab;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -22,19 +24,17 @@ public class Main {
         String inputPath = projectRoot.resolve("resources").resolve("input.txt").toString();
         String outputPath = projectRoot.resolve("resources").resolve("output.txt").toString();
         
-        try (FileReader reader = new FileReader(inputPath)) {
-            StringBuilder content = new StringBuilder();
-            int character;
-            // Read all content
-            while ((character = reader.read()) != -1) {
-                content.append((char) character);
-            }
+        try (BufferedReader reader = new BufferedReader(new FileReader(inputPath));
+             BufferedWriter writer = new BufferedWriter(new FileWriter(outputPath))) {
             
-            // Write reversed content
-            try (FileWriter writer = new FileWriter(outputPath)) {
-                writer.write(content.reverse().toString());
-                System.out.println("File content reversed successfully.");
+            String line;
+            while ((line = reader.readLine()) != null) {
+                if (line.toLowerCase().contains("second")) {
+                    writer.write(line.toUpperCase());
+                    writer.newLine();
+                }
             }
+            System.out.println("File processed with buffered I/O.");
         } catch (IOException e) {
             System.err.println("Error processing file: " + e.getMessage());
         }
