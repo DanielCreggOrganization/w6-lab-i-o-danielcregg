@@ -8,6 +8,9 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.stream.Stream;
 
 public class Main {
     public static void main(String[] args) {
@@ -35,6 +38,32 @@ public class Main {
                 }
             }
             System.out.println("File processed with buffered I/O.");
+        } catch (IOException e) {
+            System.err.println("Error processing file: " + e.getMessage());
+        }
+
+        try (Stream<String> lines = Files.lines(Paths.get(inputPath))) {
+            long lineCount = lines.count();
+            System.out.println("Number of lines: " + lineCount);
+        } catch (IOException e) {
+            System.err.println("Error reading file: " + e.getMessage());
+        }
+
+        try (Stream<String> lines = Files.lines(Paths.get(inputPath))) {
+            long wordCount = lines
+                .flatMap(line -> Arrays.stream(line.split("\\s+")))
+                .count();
+            System.out.println("Number of words: " + wordCount);
+        } catch (IOException e) {
+            System.err.println("Error processing file: " + e.getMessage());
+        }
+
+        try (Stream<String> lines = Files.lines(Paths.get(inputPath))) {
+            String longestWord = lines
+                .flatMap(line -> Arrays.stream(line.split("\\s+")))
+                .max(Comparator.comparingInt(String::length))
+                .orElse("No words found");
+            System.out.println("Longest word: " + longestWord);
         } catch (IOException e) {
             System.err.println("Error processing file: " + e.getMessage());
         }
