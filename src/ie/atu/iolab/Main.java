@@ -4,6 +4,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 
 public class Main {
@@ -18,35 +19,25 @@ public class Main {
             System.out.println("output.txt not found at: " + outputFilePath.toAbsolutePath());
         }
 
-        Path filePath = projectRoot.resolve("resources").resolve("input.txt");
-        FileInputStream fis = null;
-        try {
-            fis = new FileInputStream(filePath.toFile());
+        String inputPath = projectRoot.resolve("resources").resolve("input.txt").toString();
+        String outputPath = projectRoot.resolve("resources").resolve("output.txt").toString();
+        
+        try (FileInputStream fis = new FileInputStream(inputPath);
+             FileOutputStream fos = new FileOutputStream(outputPath)) {
             int data;
-            String fileContent = ""; // Start with an empty string
-            int charCount = 0;
-            int byteCount = 0;
-            
             while ((data = fis.read()) != -1) {
-                fileContent = fileContent + (char) data; // Append each character
-                byteCount++;
-            }
-            
-            System.out.println("\nFile content:\n" + fileContent);
-            charCount = fileContent.length();
-            System.out.println("Total characters: " + charCount);
-            System.out.println("Total bytes: " + byteCount);
-            
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        } finally {
-            try {
-                if (fis != null) {
-                    fis.close();
+                char ch = (char) data;
+                char lower = Character.toLowerCase(ch);
+                // Check if character is t,h,i,s and convert to uppercase if so
+                if ("this".indexOf(lower) != -1) {
+                    fos.write(Character.toUpperCase(ch));
+                } else {
+                    fos.write(Character.toLowerCase(ch));
                 }
-            } catch (IOException e) {
-                System.err.println("Error closing file: " + e.getMessage());
             }
+            System.out.println("File processed successfully.");
+        } catch (IOException e) {
+            System.err.println("Error processing file: " + e.getMessage());
         }
     }
 }
