@@ -3,8 +3,8 @@ package ie.atu.iolab;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.Files;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
 
 public class Main {
@@ -22,20 +22,19 @@ public class Main {
         String inputPath = projectRoot.resolve("resources").resolve("input.txt").toString();
         String outputPath = projectRoot.resolve("resources").resolve("output.txt").toString();
         
-        try (FileInputStream fis = new FileInputStream(inputPath);
-             FileOutputStream fos = new FileOutputStream(outputPath)) {
-            int data;
-            while ((data = fis.read()) != -1) {
-                char ch = (char) data;
-                char lower = Character.toLowerCase(ch);
-                // Check if character is t,h,i,s and convert to uppercase if so
-                if ("this".indexOf(lower) != -1) {
-                    fos.write(Character.toUpperCase(ch));
-                } else {
-                    fos.write(Character.toLowerCase(ch));
-                }
+        try (FileReader reader = new FileReader(inputPath)) {
+            StringBuilder content = new StringBuilder();
+            int character;
+            // Read all content
+            while ((character = reader.read()) != -1) {
+                content.append((char) character);
             }
-            System.out.println("File processed successfully.");
+            
+            // Write reversed content
+            try (FileWriter writer = new FileWriter(outputPath)) {
+                writer.write(content.reverse().toString());
+                System.out.println("File content reversed successfully.");
+            }
         } catch (IOException e) {
             System.err.println("Error processing file: " + e.getMessage());
         }
